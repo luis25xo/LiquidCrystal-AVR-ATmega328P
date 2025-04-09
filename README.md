@@ -12,7 +12,7 @@ La biblioteca `LiquidCrystal` proporciona una implementación para controlar pan
 - Funciones para escribir texto, mover el cursor y limpiar la pantalla.
 
 ## Requisitos
-- Un microcontrolador AVR, como el ATmega328P.
+- Microcontrolador AVR ATmega328P.
 - Pantalla LCD compatible con HD44780.
 - Conexión adecuada entre el microcontrolador y el LCD (4 bits o 8 bits).
 
