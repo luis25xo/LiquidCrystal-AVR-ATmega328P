@@ -7,7 +7,7 @@ La biblioteca `LiquidCrystal` proporciona una implementación para controlar pan
 - **main.c**: Ejemplo de uso que muestra cómo inicializar y usar la biblioteca para controlar una pantalla LCD.
 
 ## Características
-- Soporte para pantallas LCD de 16x2, 20x4 y otras basadas en HD44780.
+- Soporte para pantallas LCD de 16x2 basadas en HD44780.
 - Configuración en modo de 4 bits.
 - Funciones para escribir texto, mover el cursor y limpiar la pantalla.
 
@@ -48,34 +48,47 @@ El archivo `main.c` contiene un ejemplo básico para probar la biblioteca. A con
 4. Realiza operaciones como mover el cursor y limpiar la pantalla.
 
 ```c
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
 #include "LiquidCrystal.h"
 
 int main(void) {
-    // Inicialización de la pantalla LCD
-    LiquidCrystal lcd;
-    LiquidCrystal_init(&lcd);
-
-    // Escribir un mensaje en la pantalla
-    LiquidCrystal_print(&lcd, "Hola, mundo!");
-
-    // Mover el cursor
-    LiquidCrystal_setCursor(&lcd, 0, 1);
-    LiquidCrystal_print(&lcd, "AVR Rocks!");
-
-    // Bucle infinito
+    LiquidCrystal_t lcd;
+    LiquidCrystal(&lcd, 2, 3, 4, 5, 6, 7); // Configuración de pines para el LCD
+    lcd.begin(&lcd, 16, 2);
+    lcd.print(&lcd, "Hello World!");
+    lcd.setCursor(&lcd, 0, 1);
+    lcd.print(&lcd, "Hola Mundo!");
+    
+    // Esperar 5 segundos
+    _delay_ms(5000);
+    
+    // Limpiar la pantalla y mostrar nuevos mensajes
+    lcd.clear(&lcd);
+    lcd.home(&lcd);
+    lcd.print(&lcd, "AVR");
+    lcd.setCursor(&lcd, 0, 1);
+    lcd.print(&lcd, "ATmega328P");
+    
     while (1) {
-        // Puedes agregar más lógica aquí
+        // Bucle infinito
     }
-
+    
     return 0;
 }
 ```
 
-### Conexión de los pines
-Asegúrate de conectar los pines del LCD a los pines correctos del microcontrolador. La configuración predeterminada está definida en `LiquidCrystal.h`. Si necesitas cambiarla, ajusta las macros en el archivo de encabezado.
+## Conexión de los pines
+Asegúrate de conectar los pines del LCD a los pines correctos del microcontrolador. La configuración predeterminada está definida en `LiquidCrystal.h`. El microcontrolador tiene tres puertos principales:
+- PORTD (Pines 0-7): Corresponden a los pines digitales 0-7. En nuestro ejemplo, usamos PD2 a PD7.
+- PORTB (Pines 8-13): Corresponden a los pines digitales PB0–PB5
+- PORTC (Pines 14-19): Corresponden a los pines analógicos (PC0–PC5)
+### Consideraciones Importantes:
+- Los pines 0 y 1 (PD0 y PD1) generalmente se evitan porque son para comunicación UART (TX/RX)
+- Asegúrate de que los pines seleccionados no estén siendo utilizados por otros periféricos (UART, SPI, I2C, etc.).
+- Los pines deben configurarse como salidas en el código (esto se realiza automáticamente en la inicialización del LCD).
+- Verifica que las conexiones físicas del hardware coincidan con los pines configurados en el software.
 
 ## Contribuciones
 Si deseas mejorar esta biblioteca, por favor envía un pull request o abre un issue en este repositorio. ¡Son bienvenidas las contribuciones de la comunidad!
-
-## Licencia
-Este proyecto está licenciado bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
